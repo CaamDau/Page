@@ -11,13 +11,13 @@ import Foundation
 import UIKit
 import SnapKit
 
-extension CD_Page {
+extension Page {
     static func makeLayout(withScrollView view:UIScrollView) {
         view.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
     }
-    static func updateLayout(withScrollView view:UIScrollView, maxW:CGFloat, model:CD_Page.Model) {
+    static func updateLayout(withScrollView view:UIScrollView, maxW:CGFloat, model:Page.Model) {
         switch model.alignment {
         case .leftOrTop where model.scrollDirection == .horizontal:
             view.snp.remakeConstraints { (make) in
@@ -64,7 +64,7 @@ extension CD_Page {
         }
     }
     
-    static func makeLayout(withItemView view:UIView, model:CD_Page.Model) {
+    static func makeLayout(withItemView view:UIView, model:Page.Model) {
         switch model.scrollDirection {
         case .horizontal:
             view.snp.makeConstraints { (make) in
@@ -77,7 +77,7 @@ extension CD_Page {
         }
         
     }
-    static func updateLayout(withItemView view:UIView, item:UIView, model:CD_Page.Model) {
+    static func updateLayout(withItemView view:UIView, item:UIView, model:Page.Model) {
         switch model.scrollDirection {
         case .horizontal:
             view.snp.remakeConstraints { (make) in
@@ -94,7 +94,7 @@ extension CD_Page {
         }
     }
     
-    static func makeLayout(withItem view:UIView, offset:CGFloat, model:CD_Page.Model) {
+    static func makeLayout(withItem view:UIView, offset:CGFloat, model:Page.Model) {
         switch model.scrollDirection {
         case .horizontal:
             view.snp.makeConstraints { (make) in
@@ -112,9 +112,9 @@ extension CD_Page {
     }
     
     
-    static func layoutForEach(_ marge:inout CGFloat, idx:Int, scrollView:UIScrollView, itemView:UIView, item:UIView, count:Int, model:CD_Page.Model) {
+    static func layoutForEach(_ marge:inout CGFloat, idx:Int, scrollView:UIScrollView, itemView:UIView, item:UIView, count:Int, model:Page.Model) {
         let offset = marge + (idx==0 ? model.marge : model.space)
-        CD_Page.makeLayout(withItem: item, offset: offset, model: model)
+        Page.makeLayout(withItem: item, offset: offset, model: model)
         scrollView.layoutIfNeeded()
         switch model.scrollDirection {
         case .horizontal:
@@ -124,26 +124,26 @@ extension CD_Page {
         }
         
         if idx == count-1 {
-            CD_Page.updateLayout(withItemView: itemView, item: item, model: model)
+            Page.updateLayout(withItemView: itemView, item: item, model: model)
             let maxW = marge+model.marge
             
             switch model.scrollDirection {
             case .horizontal:
                 guard let v = scrollView.superview else { return }
                 let www = maxW < v.frame.size.width ? maxW : v.frame.size.width
-                CD_Page.updateLayout(withScrollView: scrollView, maxW: www, model: model)
+                Page.updateLayout(withScrollView: scrollView, maxW: www, model: model)
             case .vertical:
                 guard let v = scrollView.superview else { return }
                 let www = maxW < v.frame.size.height ? maxW : v.frame.size.height
-                CD_Page.updateLayout(withScrollView: scrollView, maxW: www, model: model)
+                Page.updateLayout(withScrollView: scrollView, maxW: www, model: model)
             }
         }
     }
 }
 
 /*
-//MARK:--- CD_PageControl ----------
-extension CD_PageControl {
+//MARK:--- PageControl ----------
+extension PageControl {
     func makeLayoutScrollView() {
         scrollView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
@@ -246,8 +246,8 @@ extension CD_PageControl {
 }
 
 
-//MARK:--- CD_PageViewController ----------
-extension CD_PageViewController {
+//MARK:--- PageViewController ----------
+extension PageViewController {
     func makeLayoutScrollView() {
         scrollView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
@@ -349,8 +349,8 @@ extension CD_PageViewController {
 
 
 
-extension CD_PageControlItem {
-    func makeLayoutLine(_ line:UIView, _ m:CD_PageControlItem.Model)  {
+extension PageControlItem {
+    func makeLayoutLine(_ line:UIView, _ m:PageControlItem.Model)  {
         line.snp.makeConstraints { (make) in
             switch m.linePosition {
             case .left(let f):

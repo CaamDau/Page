@@ -16,18 +16,18 @@ import Foundation
 
 
 @IBDesignable
-public class CD_PageUICollectionView: UICollectionView {
+public class PageUICollectionView: UICollectionView {
 }
-extension CD_PageUICollectionView: UIGestureRecognizerDelegate {
+extension PageUICollectionView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return self.cd.panBack(gestureRecognizer, otherGesture: otherGestureRecognizer)
     }
 }
 
 @IBDesignable
-public class CD_PageUIScrollView: UIScrollView {
+public class PageUIScrollView: UIScrollView {
 }
-extension CD_PageUIScrollView: UIGestureRecognizerDelegate {
+extension PageUIScrollView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return self.cd.panBack(gestureRecognizer, otherGesture: otherGestureRecognizer)
     }
@@ -38,25 +38,16 @@ extension CD_PageUIScrollView: UIGestureRecognizerDelegate {
 
 
 @IBDesignable
-public class CD_RecognizeSimultaneouslyScrollView: UIScrollView {}
-extension CD_RecognizeSimultaneouslyScrollView: UIGestureRecognizerDelegate {
+public class RecognizeSimultaneouslyScrollView: UIScrollView {}
+extension RecognizeSimultaneouslyScrollView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
 }
 
 @IBDesignable
-public class CD_RecognizeSimultaneouslyCollectionView: UICollectionView {}
-extension CD_RecognizeSimultaneouslyCollectionView: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-}
-
-
-@IBDesignable
-public class CD_RecognizeSimultaneouslyTableView: UITableView {}
-extension CD_RecognizeSimultaneouslyTableView: UIGestureRecognizerDelegate {
+public class RecognizeSimultaneouslyCollectionView: UICollectionView {}
+extension RecognizeSimultaneouslyCollectionView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
@@ -64,7 +55,16 @@ extension CD_RecognizeSimultaneouslyTableView: UIGestureRecognizerDelegate {
 
 
 @IBDesignable
-public class CD_IgnoreHeaderTouchTableView: UITableView {
+public class RecognizeSimultaneouslyTableView: UITableView {}
+extension RecognizeSimultaneouslyTableView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+}
+
+
+@IBDesignable
+public class IgnoreHeaderTouchTableView: UITableView {
     open lazy var ignoreHeaderFrame: CGRect = {
         return self.tableHeaderView?.frame ?? .zero
     }()
@@ -79,9 +79,9 @@ public class CD_IgnoreHeaderTouchTableView: UITableView {
 }
 
 @IBDesignable
-public class CD_IgnoreHeaderTouchRecognizeSimultaneouslTableView: CD_IgnoreHeaderTouchTableView {
+public class IgnoreHeaderTouchRecognizeSimultaneouslTableView: IgnoreHeaderTouchTableView {
 }
-extension CD_IgnoreHeaderTouchRecognizeSimultaneouslTableView: UIGestureRecognizerDelegate {
+extension IgnoreHeaderTouchRecognizeSimultaneouslTableView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }

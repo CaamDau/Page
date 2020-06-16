@@ -1,7 +1,7 @@
 //Created  on 2019/5/29 by  LCD:https://github.com/liucaide .
 
 /***** 模块文档 *****
- * CD_PageControl 默认标签
+ * PageControl 默认标签
  */
 
 
@@ -9,7 +9,7 @@
 
 import UIKit
 
-public struct CD_PageControlItemDataSource {
+public struct PageControlItemDataSource {
     public var id:String = ""
     public var title:String = ""
     public var img:UIImage?
@@ -18,7 +18,7 @@ public struct CD_PageControlItemDataSource {
 }
 
 //MARK:--- Item ----------
-extension CD_PageControlItem {
+extension PageControlItem {
     public struct Model {
         public var colorSelected:UIColor = UIColor.cd_hex("0", dark: "f")
         public var colorNormal:UIColor = UIColor.cd_hex("d3", dark:"f0")
@@ -28,7 +28,7 @@ extension CD_PageControlItem {
         
         public var lineColor:UIColor = UIColor.cd_hex("0", dark: "f")
         public var lineRadiusClips:(CGFloat,Bool) = (1.5,true)
-        public var lineSize:(w:CD_Page.Size,h:CD_Page.Size) = (w:CD_Page.Size.auto,h:CD_Page.Size.size(3))
+        public var lineSize:(w:Page.Size,h:Page.Size) = (w:Page.Size.auto,h:Page.Size.size(3))
         public var linePosition:Position = .bottom(0)
         public enum Animotion {
             case zoom
@@ -47,8 +47,8 @@ extension CD_PageControlItem {
     }
 }
 
-extension CD_PageControlItem: CD_PageControlItemProtocol {
-    public var click: CD_PageControlDidSelectBlock? {
+extension PageControlItem: PageControlItemProtocol {
+    public var click: PageControlDidSelectBlock? {
         get {
             return _didSelect
         }
@@ -56,7 +56,7 @@ extension CD_PageControlItem: CD_PageControlItemProtocol {
             _didSelect = newValue
         }
     }
-    public var config: CD_PageControlItem.Model? {
+    public var config: PageControlItem.Model? {
         get {
             return _config
         }
@@ -64,7 +64,7 @@ extension CD_PageControlItem: CD_PageControlItemProtocol {
             _config = newValue
         }
     }
-    public var dataSource: CD_PageControlItemDataSource? {
+    public var dataSource: PageControlItemDataSource? {
         get {
             return _dataSource
         }
@@ -81,11 +81,11 @@ extension CD_PageControlItem: CD_PageControlItemProtocol {
             _scale = newValue
         }
     }
-    public typealias DataSource = CD_PageControlItemDataSource
-    public typealias ConfigModel = CD_PageControlItem.Model
+    public typealias DataSource = PageControlItemDataSource
+    public typealias ConfigModel = PageControlItem.Model
 }
 
-public class CD_PageControlItem: UIButton {
+public class PageControlItem: UIButton {
     private lazy var line: UIView = {
         return UIView().cd.background(UIColor.cd_hex("0", dark: "f")).build
     }()
@@ -103,10 +103,10 @@ public class CD_PageControlItem: UIButton {
     }
     
     private func makeDefault() {
-        self._config = CD_PageControlItem.Model()
+        self._config = PageControlItem.Model()
         self.addTarget(nil, action: #selector(clickButton(_:)), for: UIControl.Event.touchUpInside)
     }
-    @objc private func clickButton(_ sender:CD_PageControlItem) {
+    @objc private func clickButton(_ sender:PageControlItem) {
         _didSelect?()
     }
     
@@ -128,7 +128,7 @@ public class CD_PageControlItem: UIButton {
     }
     
     
-    private var _didSelect: CD_PageControlDidSelectBlock?
+    private var _didSelect: PageControlDidSelectBlock?
     private var _selectedRed:CGFloat   = 0.0
     private var _selectedGreen:CGFloat = 0.0
     private var _selectedBlue:CGFloat  = 0.0
@@ -210,14 +210,14 @@ public class CD_PageControlItem: UIButton {
         }
     }
     
-    private var _dataSource:CD_PageControlItemDataSource? {
+    private var _dataSource:PageControlItemDataSource? {
         didSet{
             guard let item = _dataSource else { return }
             self.cd.text(item.title)
         }
     }
     
-    private var _config:CD_PageControlItem.Model? {
+    private var _config:PageControlItem.Model? {
         didSet {
             guard let m = _config else {return}
             colorSelected = m.colorSelected

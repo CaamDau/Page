@@ -1,7 +1,7 @@
 //Created  on 2019/6/1 by  LCD:https://github.com/liucaide .
 
 /***** 模块文档 *****
- * CD_PageControl 默认浮漂
+ * PageControl 默认浮漂
  */
 
 
@@ -10,9 +10,9 @@
 import Foundation
 import UIKit
 
-public extension CD_PageControlBuoy {
+public extension PageControlBuoy {
     struct Model {
-        public var frame:CGRect = CGRect(x: 0, y: 0, w: CD_Page.Size.auto.rawValue, h: 3)
+        public var frame:CGRect = CGRect(x: 0, y: 0, w: Page.Size.auto.rawValue, h: 3)
         public var color:UIColor = UIColor.cd_hex("0", dark: "f")
         public var radiusClips:(CGFloat,Bool) = (1.5,true)
         public var style:Style = .line(.bottom(0))
@@ -40,7 +40,7 @@ public extension CD_PageControlBuoy {
         public init() {}
     }
 }
-public class CD_PageControlBuoy: UIView {
+public class PageControlBuoy: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         makeDefault()
@@ -54,13 +54,13 @@ public class CD_PageControlBuoy: UIView {
     }
     func makeDefault() {
     }
-    var _config:CD_PageControlBuoy.Model? {
+    var _config:PageControlBuoy.Model? {
         didSet {
             guard let model = _config else {return}
             let x = model.frame.origin.x
             let y = model.frame.origin.x
-            let w = model.frame.size.width == CD_Page.Size.auto.rawValue ? 0 : model.frame.size.width
-            let h = model.frame.size.height == CD_Page.Size.auto.rawValue ? 0 : model.frame.size.height
+            let w = model.frame.size.width == Page.Size.auto.rawValue ? 0 : model.frame.size.width
+            let h = model.frame.size.height == Page.Size.auto.rawValue ? 0 : model.frame.size.height
             self.cd
                 .frame(CGRect(x: x, y: y, w: w, h: h))
                 .corner(model.radiusClips.0, clips: model.radiusClips.1)
@@ -80,8 +80,8 @@ public class CD_PageControlBuoy: UIView {
 
 
 
-//MARK:--- CD_PageControlBuoyProtocol ----------
-extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
+//MARK:--- PageControlBuoyProtocol ----------
+extension PageControlBuoy: PageControlBuoyProtocol {
     
     public func scroll(willBeginDragging view: UIScrollView?, offset:CGFloat){
         guard !isLock else {return}
@@ -90,7 +90,7 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
         isLock = true
     }
     
-    public func scroll(didScroll view: UIScrollView?, contentOffset:CGFloat, offsetRatio:CGFloat, size:CGFloat, index:Int, offsetItemWidthScale scale:CGFloat, scrollDirection:CD_Page.Model.ScrollDirection) {
+    public func scroll(didScroll view: UIScrollView?, contentOffset:CGFloat, offsetRatio:CGFloat, size:CGFloat, index:Int, offsetItemWidthScale scale:CGFloat, scrollDirection:Page.Model.ScrollDirection) {
         
         guard let model = config else { return }
         let minus = contentOffset - offsetBegin < 0
@@ -125,7 +125,7 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
             break
         }
     }
-    public func scroll(endScroll view: UIScrollView?, index:Int, item:UIView?, scrollDirection:CD_Page.Model.ScrollDirection, animotion:Bool){
+    public func scroll(endScroll view: UIScrollView?, index:Int, item:UIView?, scrollDirection:Page.Model.ScrollDirection, animotion:Bool){
         guard let superV = self.superview, let item = item else {
             return
         }
@@ -136,7 +136,7 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
         let itemFrame = item.frame
         switch model.style {
         case .line(let position) where scrollDirection == .horizontal:
-            let auto = model.frame.size.width == CD_Page.Size.auto.rawValue
+            let auto = model.frame.size.width == Page.Size.auto.rawValue
             f.origin.x = auto
                 ? itemFrame.minX
                 : ((itemFrame.maxX-itemFrame.minX - model.frame.size.width)/2.0 + itemFrame.minX)
@@ -152,7 +152,7 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
                 f.origin.y = superV.frame.minY-f.size.height
             }
         case .line(let position) where scrollDirection == .vertical:
-            let auto = model.frame.size.height == CD_Page.Size.auto.rawValue
+            let auto = model.frame.size.height == Page.Size.auto.rawValue
             f.origin.y = auto
                 ? itemFrame.minY
                 : ((itemFrame.maxY - itemFrame.minY - model.frame.size.height)/2.0 + itemFrame.minY)
@@ -171,7 +171,7 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
             }
             
         case .background(let position) where scrollDirection == .horizontal:
-            let auto = model.frame.size.width == CD_Page.Size.auto.rawValue
+            let auto = model.frame.size.width == Page.Size.auto.rawValue
             f.origin.x = auto
                 ? itemFrame.minX
                 : ((itemFrame.maxX - itemFrame.minX - model.frame.size.width)/2.0 + itemFrame.minX)
@@ -190,7 +190,7 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
             }
             
         case .background(let position) where scrollDirection == .vertical:
-            let auto = model.frame.size.height == CD_Page.Size.auto.rawValue
+            let auto = model.frame.size.height == Page.Size.auto.rawValue
             f.origin.y = auto
                 ? itemFrame.minY
                 : ((itemFrame.maxY - itemFrame.minY - model.frame.size.height)/2.0 + itemFrame.minY)
@@ -231,7 +231,7 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
         }
         isLock = false
     }
-    public var config: CD_PageControlBuoy.Model? {
+    public var config: PageControlBuoy.Model? {
         get {
             return _config
         }
@@ -239,6 +239,6 @@ extension CD_PageControlBuoy: CD_PageControlBuoyProtocol {
             _config = newValue
         }
     }
-    public typealias ConfigModel = CD_PageControlBuoy.Model
+    public typealias ConfigModel = PageControlBuoy.Model
 }
 

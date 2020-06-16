@@ -10,7 +10,7 @@
 import Foundation
 import UIKit
 
-public struct CD_Page {
+public struct Page {
     public struct Model {
         /// View.tag 差值
         public var offsetTag:Int = 10
@@ -54,9 +54,9 @@ public struct CD_Page {
 }
 
 
-//MARK:--- CD_PageProtocol ----------
+//MARK:--- PageProtocol ----------
 /// 分页内容控制器协议
-public protocol CD_PageScrollProtocol: NSObjectProtocol {
+public protocol PageScrollProtocol: NSObjectProtocol {
     /// 正在滑动
     func scroll(didScroll view:UIScrollView, contentOffset:CGFloat, offsetRatio:CGFloat, size:CGFloat, index:Int)
     /// 滑动结束
@@ -71,11 +71,11 @@ public protocol CD_PageScrollProtocol: NSObjectProtocol {
 
 
 /// 分页导航栏选中协议
-public protocol CD_PageControlProtocol: NSObjectProtocol {
+public protocol PageControlProtocol: NSObjectProtocol {
     func didSelect(withIndex index:Int)
 }
 /// 分页导航栏数据源协议
-public protocol CD_PageControlDataSource {
+public protocol PageControlDataSource {
     associatedtype DataSource
     var dataSource:DataSource { set get }
     var selectIndex:Int { set get }
@@ -84,30 +84,30 @@ public protocol CD_PageControlDataSource {
 }
 
 /// 分页导航标签响应回调
-public typealias CD_PageControlDidSelectBlock = (() -> Void)
-/// 分页导航标签构造配置协议 - 自定义标签遵循此协议，默认标签：CD_PageControlItem
-public protocol CD_PageControlItemProtocol {
+public typealias PageControlDidSelectBlock = (() -> Void)
+/// 分页导航标签构造配置协议 - 自定义标签遵循此协议，默认标签：PageControlItem
+public protocol PageControlItemProtocol {
     associatedtype DataSource
     associatedtype ConfigModel
     var dataSource:DataSource? { set get }
     var config:ConfigModel? { set get }
     var scale:CGFloat {set get}
     var id:String {set get}
-    var click:CD_PageControlDidSelectBlock?{ set get }
+    var click:PageControlDidSelectBlock?{ set get }
 }
 
-/// 分页导航浮漂构造配置协议 - 自定义浮漂遵循此协议，默认浮漂：CD_PageControlBuoy
-public protocol CD_PageControlBuoyProtocol {
+/// 分页导航浮漂构造配置协议 - 自定义浮漂遵循此协议，默认浮漂：PageControlBuoy
+public protocol PageControlBuoyProtocol {
     associatedtype ConfigModel
     var config:ConfigModel? { set get }
-    func scroll(didScroll view: UIScrollView?, contentOffset:CGFloat, offsetRatio:CGFloat, size:CGFloat, index:Int, offsetItemWidthScale scale:CGFloat, scrollDirection:CD_Page.Model.ScrollDirection)
-    func scroll(endScroll view: UIScrollView?, index:Int, item:UIView?, scrollDirection:CD_Page.Model.ScrollDirection, animotion:Bool)
+    func scroll(didScroll view: UIScrollView?, contentOffset:CGFloat, offsetRatio:CGFloat, size:CGFloat, index:Int, offsetItemWidthScale scale:CGFloat, scrollDirection:Page.Model.ScrollDirection)
+    func scroll(endScroll view: UIScrollView?, index:Int, item:UIView?, scrollDirection:Page.Model.ScrollDirection, animotion:Bool)
     func scroll(willBeginDragging view: UIScrollView?, offset:CGFloat)
 }
 
-extension CD_PageControlItemProtocol {
+extension PageControlItemProtocol {
     public var id:String {set{} get{return ""}}
-    var click: CD_PageControlDidSelectBlock? {
+    var click: PageControlDidSelectBlock? {
         get { return nil }
         set {}
     }

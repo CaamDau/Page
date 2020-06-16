@@ -1,8 +1,8 @@
 //Created  on 2019/4/13 by  LCD:https://github.com/liucaide .
 
 /***** 模块文档 *****
- * 分页容器 子View自由
- * 当然子View应遵循 CD_UIProtocol 来统一制式 关联数据
+ * 分页控制器 子控制器自由
+ * 当然子控制器应遵循 UIProtocol 来统一制式 关联数据
  */
 
 
@@ -12,24 +12,24 @@ import Foundation
 import UIKit
 
 
-public class CD_PageView: UIView {
+public class PageViewController: UIViewController {
     
     private var selfWidth:CGFloat {
-        return self.bounds.size.width
+        return self.view.bounds.size.width
     }
     private var selfHeight:CGFloat {
-        return self.bounds.size.height
+        return self.view.bounds.size.height
     }
     private var observer:NSObjectProtocol?
     private var contentOffsetBegin:CGFloat = 0
-    public weak var delegate:CD_PageScrollProtocol?
+    public weak var delegate:PageScrollProtocol?
     
-    public var model:CD_Page.Model =  {
-        var m = CD_Page.Model()
+    public var model:Page.Model =  {
+        var m = Page.Model()
         m.marge = 0
         m.space = 0
         return m
-        }(){
+    }(){
         didSet{
             updateScrollView()
             updateLayoutScrollView()
@@ -41,8 +41,8 @@ public class CD_PageView: UIView {
             reloadData()
         }
     }
-    public lazy var scrollView: CD_PageUIScrollView = {
-        return CD_PageUIScrollView().cd
+    public lazy var scrollView: PageUIScrollView = {
+        return PageUIScrollView().cd
             .bounces(false)
             .shows(verticalScrollIndicator: false)
             .shows(horizontalScrollIndicator: false)
@@ -53,42 +53,37 @@ public class CD_PageView: UIView {
             .build
     }()
     
-    public var dataSource:[CD_RowViewProtocol] = [] {
+    public var dataSource:[RowVCProtocol] = [] {
         didSet{
             updateViewControllers()
             reloadData()
         }
     }
     private var dataSourceSize:[(min:CGFloat, max:CGFloat, index:Int)] = []
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        makeScrollView()
+        
+        observer = CD.notice.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: OperationQueue.main, using: { [weak self](n) in
+            self?.updateLayoutScrollView()
+            self?.selectTo(false)
+        })
+    }
     
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        makeScrollView()
-    }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        makeScrollView()
-    }
-    public convenience init() {
-        self.init(frame: .zero)
-    }
-    public override func layoutSubviews() {
-        super.layoutSubviews()
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         self.updateLayoutScrollView()
     }
 }
 
 
 //MARK:--- ScrollView Style ----------
-extension CD_PageView {
+extension PageViewController {
     func makeScrollView()  {
-        self.cd.add(scrollView)
-        CD_Page.makeLayout(withScrollView: scrollView)
+        self.view.cd.add(scrollView)
+        Page.makeLayout(withScrollView: scrollView)
+        self.view.layoutIfNeeded()
         updateLayoutScrollView()
-        observer = CD.notice.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: OperationQueue.main, using: { [weak self](n) in
-            self?.updateLayoutScrollView()
-            self?.selectTo(false)
-        })
     }
     func updateScrollView()  {
         scrollView.cd
@@ -96,11 +91,11 @@ extension CD_PageView {
             .isPaging(enabled: model.isScrollPaging)
     }
     func updateViewControllers() {
-        self.layoutIfNeeded()
-        self.scrollView.subviews.forEach { [weak self](view) in
-            let bool =  self?.dataSource.contains{$0.view == view} ?? true
+        self.children.forEach { [weak self](vc) in
+            let bool =  self?.dataSource.contains{$0.vc == vc} ?? true
             guard !bool else { return }
-            view.removeFromSuperview()
+            vc.view.removeFromSuperview()
+            vc.removeFromParent()
         }
         updateLayoutScrollView()
     }
@@ -137,8 +132,9 @@ extension CD_PageView {
     }
     func reloadData() {
         guard self.selectIndex < dataSource.count else { return }
-        let ss = (self.selectIndex-1...self.selectIndex+1)
-        for (i,item) in dataSource.enumerated() where ss.contains(i) && !self.scrollView.subviews.contains(item.view) {
+        let ss = (self.selectIndex-model.loadNextNum ... self.selectIndex+model.loadNextNum)
+        for (i,item) in dataSource.enumerated() where ss.contains(i) && !self.children.contains(item.vc) {
+            self.addChild(item.vc)
             //item.view.backgroundColor = i%2==0 ? .red : .lightGray
             scrollView.addSubview(item.view)
             if i == selectIndex {
@@ -152,7 +148,7 @@ extension CD_PageView {
             scroll(toIndex: selectIndex, animated:animated)
         }
     }
-    func scroll(toIndex index:Int, animated:Bool = false) {
+    public func scroll(toIndex index:Int, animated:Bool = false) {
         guard index < dataSourceSize.count else { return }
         var offset:CGPoint = .zero
         switch model.scrollDirection {
@@ -170,15 +166,15 @@ extension CD_PageView {
     
 }
 
-extension CD_PageView: CD_PageControlProtocol {
+extension PageViewController: PageControlProtocol {
     public func didSelect(withIndex index:Int) {
         guard self.selectIndex != index else {return}
         self.selectIndex = index
         scroll(toIndex:index)
-        //        self.delegate?.scroll(didEndScrollingAnimation: scrollView, index:index, animotion:false)
+//        self.delegate?.scroll(didEndScrollingAnimation: scrollView, index:index, animotion:false)
     }
 }
-extension CD_PageView: UIScrollViewDelegate {
+extension PageViewController: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         var contentOffset:CGFloat = 0
         var size:CGFloat = 0
@@ -211,9 +207,9 @@ extension CD_PageView: UIScrollViewDelegate {
         var contentOffset = CGFloat(self.selectIndex)
         switch model.scrollDirection {
         case .horizontal:
-            contentOffset = scrollView.contentOffset.x
+            contentOffset = scrollView.contentOffset.x + 1
         case .vertical:
-            contentOffset = scrollView.contentOffset.y
+            contentOffset = scrollView.contentOffset.y + 1
         }
         let index = dataSourceSize.filter{($0.min..<$0.max).contains(contentOffset)}.map{$0.index}.first ?? selectIndex
         self.delegate?.scroll(didEndScrollingAnimation: scrollView, index:index, animotion:abs(index-selectIndex)==1)
@@ -223,9 +219,9 @@ extension CD_PageView: UIScrollViewDelegate {
         var contentOffset = CGFloat(self.selectIndex)
         switch model.scrollDirection {
         case .horizontal:
-            contentOffset = scrollView.contentOffset.x
+            contentOffset = scrollView.contentOffset.x + 1
         case .vertical:
-            contentOffset = scrollView.contentOffset.y
+            contentOffset = scrollView.contentOffset.y + 1
         }
         let index = dataSourceSize.filter{($0.min..<$0.max).contains(contentOffset)}.map{$0.index}.first ?? selectIndex
         self.delegate?.scroll(didEndDecelerating: scrollView, index:index)
@@ -237,7 +233,7 @@ extension CD_PageView: UIScrollViewDelegate {
         switch model.scrollDirection {
         case .horizontal:
             if (scrollView.contentOffset.x == 0 || scrollView.contentOffset.x + scrollView.bounds.size.width == scrollView.contentSize.width) {
-                contentOffset = scrollView.contentOffset.x
+                contentOffset = scrollView.contentOffset.x  + 1
                 let index = dataSourceSize.filter{($0.min..<$0.max).contains(contentOffset)}.map{$0.index}.first ?? selectIndex
                 self.delegate?.scroll(didEndDragging: scrollView, index:index)
                 self.selectIndex = index
@@ -245,7 +241,7 @@ extension CD_PageView: UIScrollViewDelegate {
         case .vertical:
             if (scrollView.contentOffset.y == 0 || scrollView.contentOffset.y + scrollView.bounds.size.height == scrollView.contentSize.height) {
                 
-                contentOffset = scrollView.contentOffset.y
+                contentOffset = scrollView.contentOffset.y + 1
                 let index = dataSourceSize.filter{($0.min..<$0.max).contains(contentOffset)}.map{$0.index}.first ?? selectIndex
                 self.delegate?.scroll(didEndDragging: scrollView, index:index)
                 self.selectIndex = index

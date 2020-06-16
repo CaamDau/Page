@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-extension CD_PageControl: CD_PageControlDataSource {
+extension PageControl: PageControlDataSource {
     public func scrolling(_ offset:CGFloat, index:Int){
         let index:Int = index
         let indexR:Int = index + 1
@@ -82,10 +82,10 @@ extension CD_PageControl: CD_PageControlDataSource {
 }
 
 
-public class CD_PageControl<Item: CD_PageControlItemProtocol, Buoy:CD_PageControlBuoyProtocol>: UIView where Item: UIView, Buoy: UIView {
-    public weak var delegate:CD_PageControlProtocol?
-    public weak var delegateScroll:CD_PageScrollProtocol?
-    public var model:CD_Page.Model = CD_Page.Model() {
+public class PageControl<Item: PageControlItemProtocol, Buoy:PageControlBuoyProtocol>: UIView where Item: UIView, Buoy: UIView {
+    public weak var delegate:PageControlProtocol?
+    public weak var delegateScroll:PageScrollProtocol?
+    public var model:Page.Model = Page.Model() {
         didSet{
             reloadData()
         }
@@ -98,8 +98,8 @@ public class CD_PageControl<Item: CD_PageControlItemProtocol, Buoy:CD_PageContro
     }
     private var index:Int = 0
     
-    public lazy var scrollView: CD_PageUIScrollView = {
-        return CD_PageUIScrollView().cd
+    public lazy var scrollView: PageUIScrollView = {
+        return PageUIScrollView().cd
             .bounces(false)
             .shows(verticalScrollIndicator: false)
             .shows(horizontalScrollIndicator: false)
@@ -136,9 +136,9 @@ public class CD_PageControl<Item: CD_PageControlItemProtocol, Buoy:CD_PageContro
             reloadData()
         }
     }
-    public convenience init(frame: CGRect = .zero, itemConfig item:Item.ConfigModel? = nil, buoyConfig buoy:Buoy.ConfigModel? = nil, model:CD_Page.Model? = nil) {
+    public convenience init(frame: CGRect = .zero, itemConfig item:Item.ConfigModel? = nil, buoyConfig buoy:Buoy.ConfigModel? = nil, model:Page.Model? = nil) {
         self.init(frame: CGRect.zero)
-        self.model = model ?? CD_Page.Model()
+        self.model = model ?? Page.Model()
         itemConfig = item
         guard buoy != nil else { return }
         buoyConfig = buoy
@@ -147,13 +147,13 @@ public class CD_PageControl<Item: CD_PageControlItemProtocol, Buoy:CD_PageContro
     }
 }
 
-extension CD_PageControl {
+extension PageControl {
     func makeUI() {
         //self.backgroundColor = UIColor.yellow
         self.cd.add(scrollView)
         self.scrollView.cd.add(itemView)
-        CD_Page.makeLayout(withScrollView: scrollView)
-        CD_Page.makeLayout(withItemView: itemView, model: model)
+        Page.makeLayout(withScrollView: scrollView)
+        Page.makeLayout(withItemView: itemView, model: model)
         reloadData()
     }
     
@@ -172,7 +172,7 @@ extension CD_PageControl {
             //controlItem.backgroundColor = i%2==0 ? .red : .lightGray
             itemView.addSubview(controlItem)
             
-            CD_Page.layoutForEach(&marge, idx: i, scrollView: scrollView, itemView: itemView, item: controlItem, count: _dataSource.count, model: model)
+            Page.layoutForEach(&marge, idx: i, scrollView: scrollView, itemView: itemView, item: controlItem, count: _dataSource.count, model: model)
         }
         
         
@@ -190,7 +190,7 @@ extension CD_PageControl {
 
 
 //MARK:--- 默认的，后期再看怎么更好的将 item 部分拆出去 ----------
-extension CD_PageControl: CD_PageScrollProtocol {
+extension PageControl: PageScrollProtocol {
     func my_scrollViewDidEndScrolling(_ view: UIScrollView?, index:Int, animotion:Bool) {
         // 浮漂部分
         let item = itemView.viewWithTag(index + model.offsetTag)
